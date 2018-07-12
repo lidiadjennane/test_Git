@@ -1,0 +1,189 @@
+<html lang="en">
+<head>
+	<script> 
+		var current_location = window.location.href; 
+		if (current_location.indexOf("https") != -1) {
+			new_location = current_location.replace("https://", "http://")
+			window.location.href = new_location;
+		}		
+	</script>
+	<meta charset="utf-8">
+	<title>AWS GK Demo</title>
+	<meta name="description" content="DSL Reports parser test">
+</head>
+<style>
+.content {
+    max-width: 500px;
+    margin: auto;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+	border-bottom-style: solid;
+	border-bottom-color: #00665E;	
+    border-bottom-width: 1px;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    color: #00665E;
+}
+
+th {
+    text-align: left;
+    padding: 8px;
+}
+
+td.result {
+    text-align: left;
+    color: black;
+}
+
+td.result_green2 {
+    text-align: left;
+    background-color: #00CC00;
+    color: black;
+}
+
+td.result_green {
+    text-align: left;
+    color: #00CC00;
+	font-weight: bold;	
+}
+
+td.result_yellow2 {
+    text-align: left;
+    background-color: #FFFF00;
+    color: black;
+}
+
+td.result_yellow {
+    text-align: left;
+    color: #FF0000;
+	font-weight: bold;	
+}
+
+td.result_red2 {
+    text-align: left;
+    background-color: #FF0000;
+    color: black;
+}
+
+td.result_red {
+    text-align: left;
+    color: #FF0000;
+	font-weight: bold;	
+}
+
+td.warning {
+    text-align: left;
+    color: #F47E20;
+}
+
+tr:nth-child(even){background-color: #FCFCFC}
+
+h3, h2, h1 {
+    color: #00665E;
+}
+
+a {
+    color: #F47E20;
+}
+
+th {
+    background-color: #00665E;
+    color: white;
+}
+
+</style>
+<body>
+
+<div id="results">
+ 
+</div>
+
+<div><hr></div>
+
+<div>
+	<div id="enter_name" style="display: block;" class="content">
+		<h3>Demo Input</h3>
+		<p>Enter User Last Name:</p>
+		<input placeholder="Last Name" id="last_name" type="text" value="">
+		<p>Enter User First Name:</p>
+		<input placeholder="First Name" id="first_name" type="text" value="">
+		<p>Enter User Email:</p>
+		<input placeholder="Email" id="email" type="text" value="">
+		
+		<br>
+		<br>
+		<input value="Add User" id="add_user" onclick="addUser();" type="button">
+	</div>
+</div>
+
+
+<script>
+function addUser() {
+	last_name = document.getElementById("last_name").value;
+	first_name = document.getElementById("first_name").value;
+	email = document.getElementById("email").value;
+
+    console.log(last_name);
+	
+	var xmlhttp;
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			console.log("results: " + xmlhttp.responseText);
+			
+			var obj = JSON.parse(xmlhttp.responseText);			
+
+			if (obj.last_name != "")
+			{				
+				table = "<table><tr><th>Last<br>Name</th><th>First<br>Name</th><th>User<br>Number</th></tr>"
+				
+				table += "<tr><td>" + obj.last_name + "</td>";
+				table += "<td>" + obj.first_name + "</td>";
+				table += "<td>" + obj.user_number + "</td>";
+				
+				table += "</table>";
+			
+				document.getElementById("results").innerHTML = table;
+			}
+			else
+			{
+				document.getElementById("results").innerHTML = "Could not add user.";
+			}
+		}
+	}
+	
+    var d = new Date();
+
+	var str1 = "//www.gkaws.com/add_user.php?last_name=";
+
+	var url = str1.concat(last_name) + "&first_name=" + first_name + "&email=" + email;
+	
+    console.log(url);
+	
+	xmlhttp.open("GET",url,true);
+	xmlhttp.send(); 
+}
+</script>
+
+</body>
+</html>
